@@ -10,21 +10,47 @@ block content
 	.index
 		.index__wrap
 			.index__title Simplex method
-			table.index__table
+			table.index__table.js-index-table
 				tr
 					td(contenteditable=true)
 					td(contenteditable=true)
 					td(contenteditable=true)
+					//-td(contenteditable=true)
 				tr
 					td(contenteditable=true)
 					td(contenteditable=true)
 					td(contenteditable=true)
+					//-td(contenteditable=true)
 				tr
 					td(contenteditable=true)
 					td(contenteditable=true)
 					td(contenteditable=true)
+					//-td(contenteditable=true)
 
-			.index__btn.btn.btn_red.js-get-solve Решить
+			//-table.index__table.js-index-table
+				tr
+					td
+						input(type='text' name='el11')
+					td
+						input(type='text' name='el12')
+					td
+						input(type='text' name='el13')
+				tr
+					td
+						input(type='text' name='el21')
+					td
+						input(type='text' name='el22')
+					td
+						input(type='text' name='el23')
+				tr
+					td
+						input(type='text' name='el31')
+					td
+						input(type='text' name='el32')
+					td
+						input(type='text' name='el33')
+
+			.index__btn.btn.btn_red.btn_disabled.js-get-solve Решить
 
 			.index__result.js-index-result
 
