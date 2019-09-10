@@ -7,26 +7,37 @@
 	&__wrap {
 		width: 87%;
 		margin: 0 auto;
-	}
-	&__title {
-		font-size: 24px;
-	}
-	&__table {
-		width: 100%;
-		margin-top: 50px;
-		border-collapse: collapse;
 
-		tr,
-		td {
-			border: 1px solid $gray;
+		&_step1 {
+			& .step_1 {
+				display: block;
+			}
+
+			& .step_2,
+			& .step_3 {
+				display: none;
+			}
+
 		}
-		tr {
-			width: 100%;
+		&_step2 {
+			& .step_2 {
+				display: block;
+			}
+
+			& .step_1,
+			& .step_3 {
+				display: none;
+			}
 		}
-		td {
-			width: 33%;
-			// width: 25%;
-			height: 30px;
+		&_step3 {
+			& .step_3 {
+				display: block;
+			}
+
+			& .step_1,
+			& .step_2 {
+				display: none;
+			}
 		}
 	}
 
@@ -62,5 +73,65 @@
 	&_disabled {
 		cursor: default;
 		opacity: 0.5;
+	}
+}
+
+.title {
+	font-size: 24px;
+}
+
+.table {
+	// width: 100%;
+	width: 640px;
+	table-layout: fixed;
+	margin-top: 50px;
+	border-collapse: collapse;
+
+	tr,
+	td {
+		border: 1px solid $gray;
+	}
+
+	td,
+	th {
+		padding: 0 5px;
+	}
+
+	&_project {
+		tr {
+			width: 100%;
+		}
+		td {
+			height: 30px;
+			text-align: center;
+		}
+
+		th {
+			height: 30px;
+			text-align: center;
+
+			&:first-of-type {
+				width: 40%;
+				text-align: left;
+			}
+		}
+	}
+
+
+	&_simplex {
+		tr {
+			width: 100%;
+		}
+		td {
+			width: 33%;
+			// width: 25%;
+			height: 30px;
+		}
+	}
+
+	&__cell {
+		&_gray {
+			background-color: $gray--light;
+		}
 	}
 }

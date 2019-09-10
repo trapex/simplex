@@ -8,6 +8,8 @@
 $white: #ffffff;
 $black: #000000;
 $gray: #616165;
+$gray--light: #eeeeee;
+$gray--dark: #353642;
 $red: #cd1041;
 
 html,
@@ -16,7 +18,7 @@ body {
 	min-height: 100vh;
 	background-color: $white;
 	font-family: 'Roboto', Arial, Helvetica, sans-serif;
-	color: $black;
+	color: $gray--dark;
 	font-size: 14px;
 }
 

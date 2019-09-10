@@ -8,24 +8,88 @@ block head
 
 block content
 	.index
-		.index__wrap
-			.index__title Simplex method
-			table.index__table.js-index-table
-				tr
-					td(contenteditable=true)
-					td(contenteditable=true)
-					td(contenteditable=true)
-					//-td(contenteditable=true)
-				tr
-					td(contenteditable=true)
-					td(contenteditable=true)
-					td(contenteditable=true)
-					//-td(contenteditable=true)
-				tr
-					td(contenteditable=true)
-					td(contenteditable=true)
-					td(contenteditable=true)
-					//-td(contenteditable=true)
+		.index__wrap.index__wrap_step2
+			.step.step_1
+				.title Выберите параметры
+			.step.step_2
+				.title Введите исходные данные по проектам
+				table.table.table_project.js-initial-table
+					thead
+						tr
+							th Момент времени (t)
+							th 0
+							th 1
+							th 2
+							th 3
+					tr
+						th Проценты по инвестированию (ht)
+						td.table__cell.table__cell_gray
+						td(contenteditable=true) 1
+						td(contenteditable=true) 2
+						td(contenteditable=true) 3
+					tr
+						th Проценты по заимствованию (st)
+						td.table__cell.table__cell_gray
+						td(contenteditable=true) 4
+						td(contenteditable=true) 5
+						td(contenteditable=true) 6
+					tr
+						th
+							| Инвестиционные платежи:
+							br
+							| Проект 1 (zt(1))
+						td(contenteditable=true) 7
+						td(contenteditable=true) 8
+						td(contenteditable=true) 9
+						td(contenteditable=true) 10
+					tr
+						th Проект 2 (zt(2))
+						td(contenteditable=true) 11
+						td(contenteditable=true) 12
+						td(contenteditable=true) 13
+						td(contenteditable=true) 14
+					tr
+						th Проект 3 (zt(3))
+						td(contenteditable=true) 15
+						td(contenteditable=true) 16
+						td(contenteditable=true) 17
+						td(contenteditable=true) 18
+					tr
+						th Базовые платежи (Mt)
+						td(contenteditable=true) 19
+						td(contenteditable=true) 20
+						td(contenteditable=true) 21
+						td(contenteditable=true) 22
+					tr
+						th Изъятия (ftY)
+						td(contenteditable=true) 23
+						td(contenteditable=true) 24
+						td(contenteditable=true) 25
+						td(contenteditable=true) 26
+				.index__btn.btn.btn_red.js-table-set Установить
+				.index__result.js-res
+			.step.step_3
+				.title Simplex method
+				table.table.table_simplex.js-index-table
+					tr
+						td(contenteditable=true)
+						td(contenteditable=true)
+						td(contenteditable=true)
+						//-td(contenteditable=true)
+					tr
+						td(contenteditable=true)
+						td(contenteditable=true)
+						td(contenteditable=true)
+						//-td(contenteditable=true)
+					tr
+						td(contenteditable=true)
+						td(contenteditable=true)
+						td(contenteditable=true)
+						//-td(contenteditable=true)
+
+				.index__btn.btn.btn_red.btn_disabled.js-get-solve Решить
+
+				.index__result.js-index-result
 
 			//-table.index__table.js-index-table
 				tr
@@ -50,7 +114,5 @@ block content
 					td
 						input(type='text' name='el33')
 
-			.index__btn.btn.btn_red.btn_disabled.js-get-solve Решить
 
-			.index__result.js-index-result
 
