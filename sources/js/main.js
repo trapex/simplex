@@ -15,11 +15,18 @@ $(function () {
 		$initialTable = $('.js-initial-table'),
 		$setInitialData = $('.js-table-set'),
 		$capitalization = $('.js-index-capitalization'),
-		$capText = $('.js-capitalization-text'),
+		$capText = $('.js-cap-text'),
 		$regret = $('.js-index-regret'),
+		$regText = $('.js-reg-text'),
 		$step = $('.js-index-step'),
 		T = 4,
 		n = 3;
+
+	let $back = $('.js-index-back');
+
+	$back.on('click', () => {
+		setStep(2);
+	});
 
 	$setInitialData.on('click', (e) => {
 		let arr = [];
@@ -33,25 +40,58 @@ $(function () {
 		let m = arrToMatrix(arr, T);
 		let capMatrix = getCapitalizationMatrix(m, n);
 		$capitalization.html(setMatrix(capMatrix));
+		let capHtml = `${getObjective(n)} &#8594; minimize<br><br>`;
+		getConstraints(capMatrix, T, n).forEach((el) =>{
+			capHtml += `${el}<br>`;
+		});
+		$capText.html(capHtml);
 		setStep(3);
 		let capResult = getSolveSimplex(getPositiveMatrix(capMatrix), T, n);
-		$capResult.html(`V= ${1/capResult.z} <br> x1= ${capResult.x1/capResult.z}; x2= ${capResult.x2/capResult.z}; x3= ${capResult.x3/capResult.z};`);
+		// $capResult.html(`V= ${1/capResult.z} <br> x1= ${capResult.x1/capResult.z}; x2= ${capResult.x2/capResult.z}; x3= ${capResult.x3/capResult.z};`);
+		$capResult.html(`&#945;<sup>*</sup> = (${capResult.x1/capResult.z}, ${capResult.x2/capResult.z}, ${capResult.x3/capResult.z})<br>&#946;<sup>*</sup> = `);
 
 		// Regret method
 		let regMatrix = getRegretMatrix(capMatrix);
 		$regret.html(setMatrix(regMatrix));
+		let regHtml = `${getObjective(n)} &#8594; minimize<br><br>`;
+		getConstraints(regMatrix, T, n).forEach((el) =>{
+			regHtml += `${el}<br>`;
+		});
+		$regText.html(regHtml);
 		let regResult = getSolveSimplex(getPositiveMatrix(regMatrix), T, n);
-		$regResult.html(`V= ${1/regResult.z} <br> x1= ${regResult.x1/regResult.z}; x2= ${regResult.x2/regResult.z}; x3= ${regResult.x3/regResult.z};`);
+		// $regResult.html(`V= ${1/regResult.z} <br> x1= ${regResult.x1/regResult.z}; x2= ${regResult.x2/regResult.z}; x3= ${regResult.x3/regResult.z};`);
+		$regResult.html(`&#945;<sup>*</sup> = (${regResult.x1/regResult.z}, ${regResult.x2/regResult.z}, ${regResult.x3/regResult.z})<br>&#946;<sup>*</sup> = `);
 	});
 
 
 	// solve of simplex method
 	let getSolveSimplex = function (matrix, T, n) {
+		let data = {
+			type: 'minimize',
+			objective: getObjective(n),
+			// constraints: [
+			// 	`${matrix[0][0] !== 0 ? matrix[0][0] + 'x1 +': ''} ${matrix[1][0] !== 0 ? matrix[1][0] + 'x2 +': ''} ${matrix[2][0] !== 0 ? matrix[2][0] + 'x3': ''} <= 1`,
+			// 	`${matrix[0][1] !== 0 ? matrix[0][1] + 'x1 +': ''} ${matrix[1][1] !== 0 ? matrix[1][1] + 'x2 +': ''} ${matrix[2][1] !== 0 ? matrix[2][1] + 'x3': ''} <= 1`,
+			// 	`${matrix[0][2] !== 0 ? matrix[0][2] + 'x1 +': ''} ${matrix[1][2] !== 0 ? matrix[1][2] + 'x2 +': ''} ${matrix[2][2] !== 0 ? matrix[2][2] + 'x3': ''} <= 1`,
+			// 	`${matrix[0][3] !== 0 ? matrix[0][3] + 'x1 +': ''} ${matrix[1][3] !== 0 ? matrix[1][3] + 'x2 +': ''} ${matrix[2][3] !== 0 ? matrix[2][3] + 'x3': ''} <= 1`
+			// ]
+			constraints: getConstraints(matrix, T, n)
+		};
+		let res = YASMIJ.solve(data);
+		console.log(res);
+		return res.result;
+	};
+
+	let getObjective = function (n) {
 		let objective = '';
 		for (let i = 0; i < n; i++) {
 			objective += `x${i + 1} + `;
 		}
 		objective = objective.substring(0, objective.length - 3);
+		return objective;
+	};
+
+	let getConstraints = function (matrix, T, n) {
 		let constraintsArr = [];
 		for (let j = 0; j < T; j++) {
 			let contr = '';
@@ -68,27 +108,8 @@ $(function () {
 			}
 			contr += ' <= 1';
 			constraintsArr.push(contr);
-			console.log(contr);
 		}
-		let data = {
-			type: 'minimize',
-			objective: objective,
-			// constraints: [
-			// 	`${matrix[0][0] !== 0 ? matrix[0][0] + 'x1 +': ''} ${matrix[1][0] !== 0 ? matrix[1][0] + 'x2 +': ''} ${matrix[2][0] !== 0 ? matrix[2][0] + 'x3': ''} <= 1`,
-			// 	`${matrix[0][1] !== 0 ? matrix[0][1] + 'x1 +': ''} ${matrix[1][1] !== 0 ? matrix[1][1] + 'x2 +': ''} ${matrix[2][1] !== 0 ? matrix[2][1] + 'x3': ''} <= 1`,
-			// 	`${matrix[0][2] !== 0 ? matrix[0][2] + 'x1 +': ''} ${matrix[1][2] !== 0 ? matrix[1][2] + 'x2 +': ''} ${matrix[2][2] !== 0 ? matrix[2][2] + 'x3': ''} <= 1`,
-			// 	`${matrix[0][3] !== 0 ? matrix[0][3] + 'x1 +': ''} ${matrix[1][3] !== 0 ? matrix[1][3] + 'x2 +': ''} ${matrix[2][3] !== 0 ? matrix[2][3] + 'x3': ''} <= 1`
-			// ]
-			constraints: constraintsArr
-		};
-		let capHtml = `${objective} -> minimize<br><br>`;
-		constraintsArr.forEach((el) =>{
-			capHtml += `${el}<br>`;
-		});
-		let res = YASMIJ.solve(data);
-		$capText.html(capHtml);
-		console.log(res);
-		return res.result;
+		return constraintsArr;
 	};
 
 	let arrToMatrix = function (arr, col) {
@@ -139,7 +160,7 @@ $(function () {
 	};
 
 	let setMatrix = function (matrix) {
-		let html = '<table class="table table_project">';
+		let html = '<table class="table table_matrix">';
 		matrix.forEach((el) => {
 			html += '<tr>';
 			el.forEach(val => {
@@ -165,7 +186,6 @@ $(function () {
 		for (let i = 0; i < data[0].length ; i++) {
 			minEls.push(Math.min.apply(null, getCol(data, i)));
 		}
-		console.log(minEls);
 		let min = Math.min.apply(null, minEls)
 		data.forEach((el) => {
 			let arr = [];
@@ -174,7 +194,6 @@ $(function () {
 			});
 			mtrx.push(arr);
 		});
-		console.table(mtrx);
 		return mtrx;
 	};
 
@@ -183,10 +202,8 @@ $(function () {
 		let maxEls = [];
 
 		for (let i = 0; i < data[0].length ; i++) {
-			console.log(getCol(data, i));
 			maxEls.push(Math.max.apply(null, getCol(data, i)));
 		}
-		console.log(maxEls);
 		data.forEach((el) => {
 			let arr = [];
 			el.forEach((val, k) => {
@@ -194,13 +211,12 @@ $(function () {
 			});
 			mtrx.push(arr);
 		});
-		console.table(mtrx);
 		return mtrx;
 	};
 
 	let setStep = function (step) {
-		$step.removeClass('index__wrap_step1 index__wrap_step2 index__wrap_step3');
-		$step.addClass(`index__wrap_step${step}`);
+		$step.removeClass('index__overflow_step1 index__overflow_step2 index__overflow_step3');
+		$step.addClass(`index__overflow_step${step}`);
 	};
 
 });
