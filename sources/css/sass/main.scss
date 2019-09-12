@@ -14,7 +14,8 @@
 			}
 
 			& .step_2,
-			& .step_3 {
+			& .step_3,
+			& .step_4 {
 				display: none;
 			}
 
@@ -25,7 +26,8 @@
 			}
 
 			& .step_1,
-			& .step_3 {
+			& .step_3 ,
+			& .step_4 {
 				display: none;
 			}
 		}
@@ -35,7 +37,19 @@
 			}
 
 			& .step_1,
-			& .step_2 {
+			& .step_2,
+			& .step_4 {
+				display: none;
+			}
+		}
+		&_step4 {
+			& .step4 {
+				display: block;
+			}
+
+			& .step1,
+			& .step2,
+			& .step3 {
 				display: none;
 			}
 		}

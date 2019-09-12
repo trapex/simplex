@@ -4,11 +4,92 @@ import YASMIJ from 'yasmij';
 
 /*eslint-disable */
 $(function () {
+	Array.prototype.max = function() {
+		return Math.max.apply(null, this);
+	};
+	Array.prototype.min = function() {
+		return Math.min.apply(null, this);
+	};
+
 	let initialData = [],
 		$initialTable = $('.js-initial-table'),
 		$setInitialData = $('.js-table-set'),
+		$capitalization = $('.js-index-capitalization'),
+		$capText = $('.js-capitalization-text'),
+		$regret = $('.js-index-regret'),
+		$step = $('.js-index-step'),
 		T = 4,
 		n = 3;
+
+	$setInitialData.on('click', (e) => {
+		let arr = [];
+		let $capResult = $('.js-cap-res'),
+			$regResult = $('.js-reg-res');
+		$.each($initialTable.find('tr'), (k, el) => {
+		});
+		$.each($initialTable.find('td'), (k, el) => {
+			arr.push(parseFloat($(el).html()) ? parseFloat($(el).html()) : null);
+		});
+		let m = arrToMatrix(arr, T);
+		let capMatrix = getCapitalizationMatrix(m, n);
+		$capitalization.html(setMatrix(capMatrix));
+		setStep(3);
+		let capResult = getSolveSimplex(getPositiveMatrix(capMatrix), T, n);
+		$capResult.html(`V= ${1/capResult.z} <br> x1= ${capResult.x1/capResult.z}; x2= ${capResult.x2/capResult.z}; x3= ${capResult.x3/capResult.z};`);
+
+		// Regret method
+		let regMatrix = getRegretMatrix(capMatrix);
+		$regret.html(setMatrix(regMatrix));
+		let regResult = getSolveSimplex(getPositiveMatrix(regMatrix), T, n);
+		$regResult.html(`V= ${1/regResult.z} <br> x1= ${regResult.x1/regResult.z}; x2= ${regResult.x2/regResult.z}; x3= ${regResult.x3/regResult.z};`);
+	});
+
+
+	// solve of simplex method
+	let getSolveSimplex = function (matrix, T, n) {
+		let objective = '';
+		for (let i = 0; i < n; i++) {
+			objective += `x${i + 1} + `;
+		}
+		objective = objective.substring(0, objective.length - 3);
+		let constraintsArr = [];
+		for (let j = 0; j < T; j++) {
+			let contr = '';
+			for (let k = 0; k < n; k++) {
+				// contr += matrix[j][k] !== 0 ? `${matrix[j][k]}x${k+1} +`: '';
+				let sign = matrix[k][j] >= 0 ? '+' : '-';
+				if (k == 0) {
+					sign = matrix[k][j] >= 0 ? '' : '-';
+					// contr += `${sign}${Math.abs(matrix[k][j])}x${k+1} `;
+				}
+				if (matrix[k][j] !== 0) {
+					contr += `${sign} ${Math.abs(matrix[k][j])}x${k+1} `;
+				}
+			}
+			contr += ' <= 1';
+			constraintsArr.push(contr);
+			console.log(contr);
+		}
+		let data = {
+			type: 'minimize',
+			objective: objective,
+			// constraints: [
+			// 	`${matrix[0][0] !== 0 ? matrix[0][0] + 'x1 +': ''} ${matrix[1][0] !== 0 ? matrix[1][0] + 'x2 +': ''} ${matrix[2][0] !== 0 ? matrix[2][0] + 'x3': ''} <= 1`,
+			// 	`${matrix[0][1] !== 0 ? matrix[0][1] + 'x1 +': ''} ${matrix[1][1] !== 0 ? matrix[1][1] + 'x2 +': ''} ${matrix[2][1] !== 0 ? matrix[2][1] + 'x3': ''} <= 1`,
+			// 	`${matrix[0][2] !== 0 ? matrix[0][2] + 'x1 +': ''} ${matrix[1][2] !== 0 ? matrix[1][2] + 'x2 +': ''} ${matrix[2][2] !== 0 ? matrix[2][2] + 'x3': ''} <= 1`,
+			// 	`${matrix[0][3] !== 0 ? matrix[0][3] + 'x1 +': ''} ${matrix[1][3] !== 0 ? matrix[1][3] + 'x2 +': ''} ${matrix[2][3] !== 0 ? matrix[2][3] + 'x3': ''} <= 1`
+			// ]
+			constraints: constraintsArr
+		};
+		let capHtml = `${objective} -> minimize<br><br>`;
+		constraintsArr.forEach((el) =>{
+			capHtml += `${el}<br>`;
+		});
+		let res = YASMIJ.solve(data);
+		$capText.html(capHtml);
+		console.log(res);
+		return res.result;
+	};
 
 	let arrToMatrix = function (arr, col) {
 		let matrix = [];
@@ -19,49 +100,14 @@ $(function () {
 		return matrix;
 	};
 
-	$setInitialData.on('click', (e) => {
-		let arr = [];
-		let $result = $('.js-res');
-		$.each($initialTable.find('tr'), (k, el) => {
+	let getRoundedMatrix = function (data) {
+		let mtrx = data;
+		mtrx.forEach((el, i) => {
+			el.forEach((val, j) => {
+				mtrx[i][j] = Math.round(val);
+			});
 		});
-		$.each($initialTable.find('td'), (k, el) => {
-			arr.push(parseInt($(el).html()) ? parseInt($(el).html()) : null);
-		});
-		let m = arrToMatrix(arr, T);
-		let capMatrix = getCapitalizationMatrix(m, n);
-		let result = getSolveSimplex(capMatrix, T, n);
-		$result.html(`V= ${1/result.z} <br> x1= ${result.x1/result.z}; x2= ${result.x2/result.z}; x3= ${result.x3/result.z};`);
-		debugger;
-	});
-
-	let getSolveSimplex = function (matrix, T, n) {
-		debugger;
-		let objective = '';
-		for (let i = 0; i < n; i++) {
-			objective += `x${i + 1} + `;
-		}
-		objective = objective.substring(0, objective.length - 3);
-		let constraintsArr = [];
-		// for (let j = 0; j < T+1; j++) {
-		// 	let contr = '';
-		// 	for (let k = 0; k < n; k++) {
-		// 		contr += matrix[j][k] !== 0 ? `${matrix[j][k]}x${k+1} +`: '';
-		// 	}
-		// }
-		debugger;
-		let data = {
-			type: 'minimize',
-			objective: objective,
-			constraints: [
-				`${matrix[0][0] !== 0 ? matrix[0][0] + 'x1 +': ''} ${matrix[1][0] !== 0 ? matrix[1][0] + 'x2 +': ''} ${matrix[2][0] !== 0 ? matrix[2][0] + 'x3': ''} <= 1`,
-				`${matrix[0][1] !== 0 ? matrix[0][1] + 'x1 +': ''} ${matrix[1][1] !== 0 ? matrix[1][1] + 'x2 +': ''} ${matrix[2][1] !== 0 ? matrix[2][1] + 'x3': ''} <= 1`,
-				`${matrix[0][2] !== 0 ? matrix[0][2] + 'x1 +': ''} ${matrix[1][2] !== 0 ? matrix[1][2] + 'x2 +': ''} ${matrix[2][2] !== 0 ? matrix[2][2] + 'x3': ''} <= 1`,
-				`${matrix[0][3] !== 0 ? matrix[0][3] + 'x1 +': ''} ${matrix[1][3] !== 0 ? matrix[1][3] + 'x2 +': ''} ${matrix[2][3] !== 0 ? matrix[2][3] + 'x3': ''} <= 1`
-			]
-		};
-		let res = YASMIJ.solve(data);
-		console.log(res);
-		return res.result;
+		return mtrx;
 	};
 
 	let getCapitalization = function (Mt, ftY, zt, C, ht, st, t) {
@@ -84,16 +130,81 @@ $(function () {
 			let capArr = [];
 			for (let j = 0; j < data[0].length; j++) {
 				let C = capArr.length === 0 ? 0 : capArr[j - 1];
-				let el = getCapitalization(data[1+ n][j], data[2+ n][j], data[2+i][j], C, data[0][j], data[1][j], j);
+				let el = getCapitalization(data[2+ n][j], data[3+ n][j], data[2+i][j], C, data[0][j], data[1][j], j);
 				capArr.push(el);
 			}
 			capMatrix.push(capArr);
 		}
-		console.table(capMatrix);
-		return capMatrix;
+		return getRoundedMatrix(capMatrix);
+	};
+
+	let setMatrix = function (matrix) {
+		let html = '<table class="table table_project">';
+		matrix.forEach((el) => {
+			html += '<tr>';
+			el.forEach(val => {
+				html += `<td>${val}</td>`;
+			});
+			html += '</tr>';
+		});
+		html += '</table>';
+		return html;
+	};
+
+	let getCol = function (matrix, col) {
+		let column = [];
+		for(let i=0; i < matrix.length; i++){
+			column.push(matrix[i][col]);
+		}
+		return column;
+	};
+
+	let getPositiveMatrix = function (data) {
+		let mtrx = [];
+		let minEls = [];
+		for (let i = 0; i < data[0].length ; i++) {
+			minEls.push(Math.min.apply(null, getCol(data, i)));
+		}
+		console.log(minEls);
+		let min = Math.min.apply(null, minEls)
+		data.forEach((el) => {
+			let arr = [];
+			el.forEach((val, k) => {
+				arr.push(val + Math.abs(min));
+			});
+			mtrx.push(arr);
+		});
+		console.table(mtrx);
+		return mtrx;
+	};
+
+	let getRegretMatrix = function (data) {
+		let mtrx = [];
+		let maxEls = [];
+
+		for (let i = 0; i < data[0].length ; i++) {
+			console.log(getCol(data, i));
+			maxEls.push(Math.max.apply(null, getCol(data, i)));
+		}
+		console.log(maxEls);
+		data.forEach((el) => {
+			let arr = [];
+			el.forEach((val, k) => {
+				arr.push(val - maxEls[k]);
+			});
+			mtrx.push(arr);
+		});
+		console.table(mtrx);
+		return mtrx;
+	};
+
+	let setStep = function (step) {
+		$step.removeClass('index__wrap_step1 index__wrap_step2 index__wrap_step3');
+		$step.addClass(`index__wrap_step${step}`);
 	};
 
 });
+
 $(function () {
 	let $send = $('.js-get-solve'),
 		$result = $('.js-index-result');

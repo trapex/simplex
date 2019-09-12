@@ -8,7 +8,7 @@ block head
 
 block content
 	.index
-		.index__wrap.index__wrap_step2
+		.index__wrap.index__wrap_step2.js-index-step
 			.step.step_1
 				.title Выберите параметры
 			.step.step_2
@@ -24,51 +24,67 @@ block content
 					tr
 						th Проценты по инвестированию (ht)
 						td.table__cell.table__cell_gray
-						td(contenteditable=true) 1
-						td(contenteditable=true) 2
-						td(contenteditable=true) 3
+						td(contenteditable=true) 0.05
+						td(contenteditable=true) 0.07
+						td(contenteditable=true) 0.07
 					tr
 						th Проценты по заимствованию (st)
 						td.table__cell.table__cell_gray
-						td(contenteditable=true) 4
-						td(contenteditable=true) 5
-						td(contenteditable=true) 6
+						td(contenteditable=true) 0.12
+						td(contenteditable=true) 0.10
+						td(contenteditable=true) 0.10
 					tr
 						th
 							| Инвестиционные платежи:
 							br
 							| Проект 1 (zt(1))
-						td(contenteditable=true) 7
-						td(contenteditable=true) 8
-						td(contenteditable=true) 9
-						td(contenteditable=true) 10
+						td(contenteditable=true) -500
+						td(contenteditable=true) -400
+						td(contenteditable=true) 800
+						td(contenteditable=true) 400
 					tr
 						th Проект 2 (zt(2))
-						td(contenteditable=true) 11
-						td(contenteditable=true) 12
-						td(contenteditable=true) 13
-						td(contenteditable=true) 14
+						td(contenteditable=true) -300
+						td(contenteditable=true) -800
+						td(contenteditable=true) 1200
+						td(contenteditable=true) 200
 					tr
 						th Проект 3 (zt(3))
-						td(contenteditable=true) 15
-						td(contenteditable=true) 16
-						td(contenteditable=true) 17
-						td(contenteditable=true) 18
+						td(contenteditable=true) -900
+						td(contenteditable=true) 800
+						td(contenteditable=true) 360
+						td(contenteditable=true) -10
 					tr
 						th Базовые платежи (Mt)
-						td(contenteditable=true) 19
-						td(contenteditable=true) 20
-						td(contenteditable=true) 21
-						td(contenteditable=true) 22
+						td(contenteditable=true) 600
+						td(contenteditable=true) 100
+						td(contenteditable=true) -200
+						td(contenteditable=true) 800
 					tr
 						th Изъятия (ftY)
-						td(contenteditable=true) 23
+						td(contenteditable=true) 20
+						td(contenteditable=true) 22
 						td(contenteditable=true) 24
-						td(contenteditable=true) 25
 						td(contenteditable=true) 26
 				.index__btn.btn.btn_red.js-table-set Установить
-				.index__result.js-res
+
 			.step.step_3
+				.title Capitalization matrix
+				.index__capitalization.js-index-capitalization
+				br
+				br
+				.text.js-capitalization-text
+				br
+				br
+				.title Result
+				.index__result.js-cap-res
+				br
+				br
+				.title Regret matrix
+				.index__regret.js-index-regret
+				.title Result
+				.index__result.js-reg-res
+			.step.step_4
 				.title Simplex method
 				table.table.table_simplex.js-index-table
 					tr
