@@ -48,7 +48,7 @@
     "gulp-sourcemaps": "^1.6.0",
     "gulp-uglify": "^3.0.0",
     "imagemin-optipng": "^4.3.0",
-    "lodash": "^4.15.0",
+    "lodash": "^4.17.19",
     "open": "0.0.5",
     "rimraf": "^2.5.4",
     "run-sequence": "^1.2.2",
